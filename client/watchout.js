@@ -3,9 +3,11 @@ var collisionCount = 0;
 var highScore = 0;
 var currentScore = 0;
 
+
 var svgContainer = d3.select('.board').append('svg')
   .attr('width', 700)
-  .attr('height', 500);
+  .attr('height', 500)
+  .style('background-color', '#DDDDDD');
 
 // var dragmove = function(d) {
 //   d3.select(this)
@@ -28,6 +30,8 @@ var follow = function(pt) {
 
 var enemyGroup = svgContainer.append('g');
 var heroGroup = svgContainer.append('g');
+
+
 
 
 var heros = heroGroup.selectAll('rect')
@@ -58,39 +62,7 @@ var enemyAttributes = enemies
   .attr('cx', function() { return Math.floor(Math.random() * 650); })
   .attr('cy', function() { return Math.floor(Math.random() * 450); })
   .attr('r', 20)
-  .attr('fill', function (d) { return 'red'; });
-
-
-// var move = function() {
-//   var enemies = enemyGroup.selectAll('circle')
-//     .data([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
-
-//   enemies.enter()
-//     .append('circle');
-
-//   var enemyAttributes = enemies
-//   .transition()
-//   .duration(1000)
-//   .attr('cx', function() { return Math.floor(Math.random() * 650); })
-//   .attr('cy', function() { return Math.floor(Math.random() * 450); })
-//   .attr('r', 20)
-//   .attr('fill', function (d) { return 'red'; })
-//   .tween('collision', collisionDetection)
-//   .each('end', move);
-// };
-
-// move();
-
-  // return function(){
-  //   var enemyX = Math.floor(enemies.attr('cx'));
-  //   var enemyY = Math.floor(enemies.attr('cy'));
-  //   var heroX = Math.floor(heros.attr('x'));
-  //   var heroY = Math.floor(heros.attr('y'));
-  //   if(Math.abs(enemyX - heroX) < 20 && Math.abs(enemyY - heroY) < 20){
-  //     collisionCount++;
-  //     d3.select('#collisionCount').html(collisionCount);
-  //   }
-  // }
+  .attr('fill', 'red');
 
 var update = function() {
   d3.transition()
@@ -109,6 +81,13 @@ setInterval(function() {
   update();
 }, 1000);
 
+var updateHighscore = function() {
+  if (currentScore > highScore) {
+    highScore = currentScore;
+    d3.select('#highScore').html(highScore);
+  }
+};
+
 var colliding = false;
 var collisionDetection = function() {
   var radius = 20;
@@ -126,8 +105,7 @@ var collisionDetection = function() {
 
     if (distance < radius * 2) {
       collision = true;
-      currentScore = 0;
-      console.log('collision true');
+      updateHighscore();
     }
   });
 
@@ -142,6 +120,10 @@ var collisionDetection = function() {
   colliding = collision;
 };
 
+setInterval(function() {
+  currentScore++;
+  d3.select('#currentScore').html(currentScore);
+}, 1000);
 
 d3.timer(collisionDetection);
 //getattribute will give x and y
